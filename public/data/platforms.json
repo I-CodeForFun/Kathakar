@@ -1,0 +1,184 @@
+{
+ "_note": "Printer/platform figures change. Treat every number as a starting point and verify against the printer's current documentation before sending files. Edit this file to update.",
+ "lastVerified": "unverified",
+ "kdp_paperback": {
+  "label": "Amazon KDP paperback (verify)",
+  "minPages": 24,
+  "maxPages": 828,
+  "bleedMm": 3.175,
+  "insideMarginIn": [
+   [
+    24,
+    150,
+    0.375
+   ],
+   [
+    151,
+    300,
+    0.5
+   ],
+   [
+    301,
+    500,
+    0.625
+   ],
+   [
+    501,
+    700,
+    0.75
+   ],
+   [
+    701,
+    828,
+    0.875
+   ]
+  ],
+  "outsideMinIn": 0.25,
+  "topBottomMinIn": 0.25,
+  "paperThicknessIn": {
+   "white": 0.002252,
+   "cream": 0.0025,
+   "color": 0.002347
+  },
+  "coverBleedIn": 0.125,
+  "spineMinPages": 79
+ },
+ "ingram": {
+  "label": "IngramSpark (verify)",
+  "minPages": 18,
+  "maxPages": 1200,
+  "bleedMm": 3,
+  "insideMarginIn": [
+   [
+    18,
+    150,
+    0.5
+   ],
+   [
+    151,
+    400,
+    0.625
+   ],
+   [
+    401,
+    1200,
+    0.75
+   ]
+  ],
+  "outsideMinIn": 0.375,
+  "topBottomMinIn": 0.375,
+  "paperThicknessIn": {
+   "white": 0.0025,
+   "cream": 0.0027,
+   "color": 0.0025
+  },
+  "coverBleedIn": 0.125,
+  "spineMinPages": 48
+ },
+ "serial": {
+  "_note": "Allowed HTML per platform changes; verify on the platform before posting.",
+  "royalroad": {
+   "label": "Royal Road",
+   "tags": [
+    "p",
+    "br",
+    "hr",
+    "em",
+    "strong",
+    "i",
+    "b",
+    "u",
+    "s",
+    "blockquote",
+    "h1",
+    "h2",
+    "h3",
+    "ul",
+    "ol",
+    "li",
+    "table",
+    "tr",
+    "td",
+    "th",
+    "a",
+    "img"
+   ],
+   "sceneBreak": "hr"
+  },
+  "wattpad": {
+   "label": "Wattpad",
+   "tags": [
+    "p",
+    "br",
+    "em",
+    "strong",
+    "i",
+    "b",
+    "u"
+   ],
+   "sceneBreak": "text"
+  },
+  "ao3": {
+   "label": "AO3 (Rich Text)",
+   "tags": [
+    "p",
+    "br",
+    "hr",
+    "em",
+    "strong",
+    "i",
+    "b",
+    "u",
+    "s",
+    "blockquote",
+    "h1",
+    "h2",
+    "h3",
+    "ul",
+    "ol",
+    "li",
+    "a",
+    "div",
+    "span"
+   ],
+   "sceneBreak": "hr"
+  },
+  "substack": {
+   "label": "Substack",
+   "tags": [
+    "p",
+    "br",
+    "hr",
+    "em",
+    "strong",
+    "i",
+    "b",
+    "blockquote",
+    "h1",
+    "h2",
+    "h3",
+    "ul",
+    "ol",
+    "li",
+    "a"
+   ],
+   "sceneBreak": "hr"
+  },
+  "ream": {
+   "label": "Ream",
+   "tags": [
+    "p",
+    "br",
+    "hr",
+    "em",
+    "strong",
+    "i",
+    "b",
+    "blockquote",
+    "h2",
+    "h3"
+   ],
+   "sceneBreak": "hr"
+  }
+ }
+}
