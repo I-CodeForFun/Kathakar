@@ -142,6 +142,33 @@ ${tbl(['Situation','What you are asked','Choices'],[
 <h5>The Kathākośa drawer</h5>${tbl(['Button','What it does'],[['Open','Switches to that story (the current one is saved first).'],['Duplicate','Makes an independent copy named “… (copy)”.'],['Delete','Removes a story, its snapshots and its backups after a confirmation. Cannot be undone — export first.'],['Restore original','Only on the two built-in examples; resets them to the shipped content.'],['Import JSON','Adds a story from a file as a <i>new</i> story; nothing is overwritten.'],['Share','Gives another user reader or editor access (accounts mode).']])}
 ${callout('tip','Unsure whether to discard? Choose <b>Save as a new story</b> — you lose nothing and can delete the copy later.')}`);
 
+sec('fields','People','Field reference: characters, places and events','What every box in the editors means.',
+`${tbl(['Record','Field','Meaning and effect'],[
+['Character','Name','Used for dialogue lines (<code>Name: text</code>), chips on the map, encyclopedia links and the rules checker. Renaming updates everywhere.'],
+['Character','Role','Free text such as Protagonist or Mentor; shown on cards and in Shared info.'],
+['Character','Colour','Tints chips, Matrix cells, Life timeline bars and the Story weave.'],
+['Character','Nature &amp; traits','Read by Worlds &amp; Rules. “Made of gold” plus a rule about gold and water produces a warning.'],
+['Character','Goal · Flaw · Secret','Shown in Focus mode (📌) and used by arc templates; never exported.'],
+['Place','Name','Events link to a place by <i>name</i>; renaming updates the events.'],
+['Place','Inside','Parent place. Events at a child also appear under the parent.'],
+['Place','Importance · History · Features','Notes for you and entries in the Encyclopedia.'],
+['Event','Title · Time · Timeline','Title becomes the chapter title; time and timeline decide order and the lane.'],
+['Event','Place · Also at','Main location and extra locations for scenes in several places.'],
+['Event','Characters','Who is present; drives the Matrix, Life timeline and character filters.'],
+['Event','Mood · Health','Mood feeds the Tension curve; health colours the Life timeline.'],
+['Event','Manuscript text','The chapter text. Plan syntax (<code>#</code>, <code>&gt;</code>, <code>Name:</code>) works here.'],
+['Event','World used · Props','Which world’s rules apply to the event and which objects appear in it.']])}`);
+
+sec('workflow','Getting started','Worked example: from idea to published book','Follow one story all the way through.',
+`<ol><li><b>Capture</b> — jot ideas in the Inbox (${kbd('Ctrl+Shift+I')}). Promote the good ones to events.</li>
+<li><b>Cast and setting</b> — add characters (goal, flaw, secret) and nested places; set a world with rules if the setting has magic or technology limits.</li>
+<li><b>Outline</b> — create events on the Journey map, order them, link causes with arrows, pick a beat sheet and compare against it.</li>
+<li><b>Draft</b> — write each event’s Manuscript text; use Focus mode and watch the word log.</li>
+<li><b>Check</b> — open Problems; fix prop, rule, calendar and timeline warnings; run Style lint and Readability.</li>
+<li><b>Revise</b> — use Edit final for line edits; save History snapshots before large changes.</li>
+<li><b>Publish</b> — fill Book details and Cover, export EPUB or DOCX, print a PDF, or serialise to a web platform.</li>
+<li><b>Back up</b> — Data → Export all, and keep a copy off this device.</li></ol>`);
+
 sec('keys','Reference','Keyboard shortcuts','',
 tbl(['Keys','Action'],[[kbd('Ctrl/⌘+K'),'Command palette &amp; search — prefix <code>@</code> characters, <code>#</code> chapters, <code>/</code> places'],[kbd('Ctrl/⌘+Z')+' · '+kbd('Ctrl/⌘+Y'),'Undo / redo'],[kbd('Ctrl/⌘+S'),'Save a history snapshot'],[kbd('Ctrl+Shift+I'),'Inbox'],[kbd('Ctrl+Shift+M'),'Problems panel'],[kbd('Space')+' · arrows · '+kbd('Esc'),'Grab, move, cancel on Corkboard and map pins']]));
 
