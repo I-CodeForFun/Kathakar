@@ -1,0 +1,14 @@
+# Automatic HTTPS (Let's Encrypt). Set DOMAIN in .env.production, e.g. DOMAIN=write.example.com
+{$DOMAIN} {
+	encode zstd gzip
+	reverse_proxy kathakaar:3000 {
+		header_up X-Forwarded-For {remote_host}
+	}
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		-Server
+	}
+	request_body {
+		max_size 25MB
+	}
+}

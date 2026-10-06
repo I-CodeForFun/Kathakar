@@ -1,0 +1,38 @@
+/* Warm editorial theme — cream paper, serif headings, terracotta accent (inspired by Claude's look) */
+:root{--ok:#1b7a4b;--warn:#8a5a00;--bad:#c0262a;--bg:#faf9f5;--card:#ffffff;--ink:#141413;--mut:#6f6e68;--line:#e8e6dc;--acc:#b4532f;--hl:#f5e9e1;--r:12px;
+ --serif:"Tiempos Text","Source Serif 4","Iowan Old Style","Palatino Linotype",Georgia,serif;--sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--ok:#4fd18b;--warn:#e6b04a;--bad:#ff8080;--bg:#1f1e1d;--card:#2a2927;--ink:#f3f1ea;--mut:#a3a199;--line:#403e3a;--acc:#d97757;--hl:#3a2e28}}
+:root[data-theme="dark"]{--ok:#4fd18b;--warn:#e6b04a;--bad:#ff8080;--bg:#1f1e1d;--card:#2a2927;--ink:#f3f1ea;--mut:#a3a199;--line:#403e3a;--acc:#d97757;--hl:#3a2e28}
+body{font-family:var(--sans);font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h3,h4,#sb .sbh b,.ed5,#focta{font-family:var(--serif)}
+h1,h3{font-weight:500;letter-spacing:-.01em}h3{font-size:22px}h4{font-weight:600;font-size:15px}
+header{background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);box-shadow:none}
+#sb{background:color-mix(in srgb,var(--bg) 60%,var(--card))}
+#sb .sbh b{font-size:18px;font-weight:500}
+.gl{letter-spacing:.12em;font-weight:600}
+.si{border-radius:10px;color:var(--ink)}.si:hover{background:color-mix(in srgb,var(--ink) 6%,transparent)}
+.si.on{background:var(--hl);color:var(--ink);box-shadow:none;font-weight:600}.si.on i{filter:none}
+.card{border-radius:var(--r);box-shadow:0 1px 2px #1414130a}
+button{border-radius:10px;transition:background .15s,border-color .15s,transform .05s}
+button:hover{border-color:color-mix(in srgb,var(--acc) 55%,var(--line));background:color-mix(in srgb,var(--acc) 7%,var(--card))}
+button:active{transform:translateY(1px)}
+button.on:not(.si),button.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+button.on:not(.si):hover,button.pri:hover{background:color-mix(in srgb,var(--acc) 88%,#000);border-color:transparent}
+input,select,textarea{border-radius:10px;background:color-mix(in srgb,var(--bg) 70%,var(--card))}
+input:focus,select:focus,textarea:focus{outline:2px solid color-mix(in srgb,var(--acc) 55%,transparent);outline-offset:0;border-color:var(--acc)}
+input[type=range]{accent-color:var(--acc)}
+#dr{border-radius:16px 0 0 16px;box-shadow:-12px 0 40px #14141322}
+#mw{border-radius:14px}
+.pc.sel{background:var(--hl)}
+.tg button{border-radius:99px}
+::selection{background:color-mix(in srgb,var(--acc) 30%,transparent)}
+#foc{background:var(--bg)}
+.wsw.on{background:var(--acc);border-color:var(--acc)}
+
+/* accessibility: text contrast on coloured / accent buttons */
+.tg button.on,.pal button.on{background:color-mix(in srgb,var(--c,var(--acc)) 58%,#000);border-color:transparent;color:#fff}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) button.on:not(.si),:root:not([data-theme="light"]) button.pri{color:#161514}:root:not([data-theme="light"]) .tg button.on{color:#fff}}
+:root[data-theme="dark"] button.on:not(.si),:root[data-theme="dark"] button.pri{color:#161514}:root[data-theme="dark"] .tg button.on{color:#fff}
+.wsw.on{background:var(--ok);border-color:var(--ok);color:#fff}
+.mut,small{color:var(--mut)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}

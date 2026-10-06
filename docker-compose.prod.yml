@@ -1,0 +1,54 @@
+# Public deployment: Caddy (HTTPS) -> Kathakaar (multi-user, open sign-up).
+#   cp .env.production.example .env.production   # edit DOMAIN etc.
+#   docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build
+#   docker compose -f docker-compose.prod.yml exec kathakaar node server/tools/admin.js create-admin <yourname>
+services:
+  kathakaar:
+    build:
+      context: .
+      args:
+        WITH_MODELS: "${WITH_MODELS:-0}"          # 1 = local neural embeddings (+~500 MB image, more RAM); 0 = built-in checker
+        PRELOAD_MODEL: "${PRELOAD_MODEL:-}"
+    image: kathakaar:latest
+    init: true
+    restart: unless-stopped
+    expose: ["3000"]                               # not published to the internet; only Caddy reaches it
+    environment:
+      HOST: "0.0.0.0"
+      KATHAKAAR_MULTIUSER: "1"
+      KATHAKAAR_SIGNUP: "${KATHAKAAR_SIGNUP:-1}"   # 0 = invitation only (admin creates accounts with the CLI)
+      KATHAKAAR_QUOTA_MB: "${KATHAKAAR_QUOTA_MB:-50}"
+      KATHAKAAR_SIGNUPS_PER_HOUR: "${KATHAKAAR_SIGNUPS_PER_HOUR:-10}"
+      RATE_LIMIT: "${RATE_LIMIT:-600}"
+      TRUST_PROXY: "1"                              # real client IP from Caddy; also disables "localhost = admin" shortcuts
+      KATHAKAAR_KEY: "${KATHAKAAR_KEY:-}"           # optional encryption at rest (back it up separately!)
+      KATHAKAAR_CLIP: "0"
+    read_only: true
+    tmpfs: ["/tmp"]
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    volumes:
+      - kathakaar-data:/app/data
+      - kathakaar-models:/app/models
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on: [kathakaar]
+    ports: ["80:80", "443:443"]
+    environment:
+      DOMAIN: "${DOMAIN:?Set DOMAIN in .env.production}"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+volumes:
+  kathakaar-data:
+  kathakaar-models:
+  caddy-data:
+  caddy-config:

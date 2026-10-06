@@ -1,0 +1,47 @@
+/* v15: print profile + preflight (E4), cover designer (E3). Numbers come from data/platforms.json (verify before sending files). */
+(function(){const X=window.SFX,esc=X.esc,ea=X.escAttr,rr=()=>{try{render()}catch(e){}};let PL=null;
+fetch('data/platforms.json').then(r=>r.json()).then(j=>{PL=j;rr()}).catch(()=>{});
+const fm=()=>typeof FM=='function'?FM():'book',txt=e=>{try{return finTxt(e,fm())}catch(x){return e.prose||''}};
+const words=()=>S.ev.reduce((a,e)=>a+(txt(e).match(/\S+/g)||[]).length,0);
+const PP=()=>({on:false,platform:'kdp_paperback',trim:'6 × 9 in',bleed:3.175,paper:'white',pages:'',mirror:true,chapterStart:'right',inside:'auto',outside:15,top:15,bottom:15,font:11,lh:1.5,...(S.pp||{})});
+function profile(){const p=PP(),plat=(PL||{})[p.platform]||{},trim=PRINT.TRIMS[p.trim]||PRINT.TRIMS.A5,pages=+p.pages||PRINT.estimatePages(words(),trim,p.font,p.lh,+p.outside||15),inside=p.inside=='auto'?PRINT.insideMm(plat,pages):+p.inside;
+ return{p,plat,trim,pages,prof:{trim,bleed:+p.bleed||0,inside,outside:+p.outside,top:+p.top,bottom:+p.bottom,mirror:p.mirror,chapterStart:p.chapterStart}}}
+X.printExtra=()=>{if(!S.pp||!S.pp.on)return'';const{prof}=profile();return PRINT.css(prof)};
+const ex=XV.craftExtra=XV.craftExtra||{};
+ex.print=()=>{if(!PL)return'<p class="mut">Loading platform data…</p>';const{p,plat,trim,pages,prof}=profile(),pf=PRINT.preflight({pages,plat,profile:prof,fonts:[p.font?'Georgia / serif':'serif']}),sel=(k,o,v)=>`<select data-p15="${k}">${o.map(x=>`<option ${x==v?'selected':''}>${esc(x)}</option>`).join('')}</select>`,num=(k,l,st)=>`<label>${l} <input type="number" step="${st||1}" data-p15="${k}" value="${ea(p[k])}" style="width:80px"></label>`;
+ return`<h4>Print-ready PDF profile</h4><p class="mut" style="font-size:12px">Adds trim, bleed, mirrored margins and recto chapter starts to the browser’s <b>Print → Save as PDF</b> output. Browser PDFs are not PDF/X and carry no crop marks, and “chapters start on the right” (blank verso pages) is only honoured by some browsers — I measured Chromium keeping chapters on consecutive pages, so check the page parity in the PDF; use the preflight below and confirm with your printer. Platform figures: <b>${esc(PL.lastVerified)}</b> — verify them.</p>
+ <label><input type="checkbox" data-p15="on" ${p.on?'checked':''}> Apply this profile when printing (Export → PDF)</label>
+ <div class="row" style="gap:10px;flex-wrap:wrap;margin:6px 0"><label>Platform ${(()=>{const ks=Object.keys(PL).filter(k=>PL[k].label);return`<select data-p15="platform">${ks.map(k=>`<option value="${k}" ${k==p.platform?'selected':''}>${esc(PL[k].label)}</option>`).join('')}</select>`})()}</label><label>Trim ${sel('trim',Object.keys(PRINT.TRIMS),p.trim)}</label><label>Paper ${sel('paper',['white','cream','color'],p.paper)}</label>${num('bleed','Bleed (mm)',0.025)}${num('pages','Page count (blank = estimate)')}</div>
+ <div class="row" style="gap:10px;flex-wrap:wrap">${num('outside','Outside (mm)',0.5)}${num('top','Top (mm)',0.5)}${num('bottom','Bottom (mm)',0.5)}<label>Inside <input data-p15="inside" value="${ea(p.inside)}" style="width:70px" aria-label="Inside margin, or auto"></label><label><input type="checkbox" data-p15="mirror" ${p.mirror?'checked':''}> Mirror margins</label><label>Chapters start ${sel('chapterStart',['right','any'],p.chapterStart)}</label></div>
+ <p>Page size with bleed: <b>${(trim[0]+2*prof.bleed).toFixed(1)} × ${(trim[1]+2*prof.bleed).toFixed(1)} mm</b> · ${pages} pages ${+p.pages?'':'(estimated from '+words()+' words)'} · inside margin ${prof.inside} mm</p>
+ <h5>Preflight</h5>${pf.length?'<ul>'+pf.map(x=>`<li>${x.sev=='error'?'⛔':x.sev=='warn'?'⚠':'ℹ'} ${esc(x.msg)}</li>`).join('')+'</ul>':'<p>✓ No issues found.</p>'}`};
+document.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.p15;if(!k)return;S.pp={...(S.pp||{}),[k]:e.target.type=='checkbox'?e.target.checked:e.target.value};save();rr()});
+// ===== cover designer =====
+const CV=()=>({tpl:'centered',bg:'#1f3a5f',title:S.title||'Title',author:'',img:null,...(S.cover||{})});
+const TPL=Object.keys(COVERTPL);
+function wrap(g,text,maxW){const out=[];let line='';for(const w of String(text).split(/\s+/)){const t=line?line+' '+w:w;if(g.measureText(t).width>maxW&&line){out.push(line);line=w}else line=t}if(line)out.push(line);return out}
+async function draw(cv,state,w,h){const g=cv.getContext('2d');cv.width=w;cv.height=h;g.fillStyle=state.bg;g.fillRect(0,0,w,h);
+ if(state.img){try{const u=await X.blob.url(state.img.b),im=new Image();im.src=u;await im.decode();const k=Math.max(w/im.width,h/im.height);g.drawImage(im,(w-im.width*k)/2,(h-im.height*k)/2,im.width*k,im.height*k)}catch(e){}}
+ const L=COVERTPL[state.tpl](w,h),fg=ink(state.bg);if(L.band){g.globalAlpha=L.band.a;g.fillStyle=state.bg;g.fillRect(L.band.x,L.band.y,L.band.w,L.band.h);g.globalAlpha=1}
+ const put=(o,t,bold)=>{g.fillStyle=fg;g.textAlign=o.align;g.font=(bold?'bold ':'')+Math.round(o.size)+'px Georgia, "Times New Roman", serif';const lines=wrap(g,t,w*(state.tpl=='split'?0.38:0.8));lines.forEach((l,i)=>g.fillText(l,o.x,o.y+i*o.size*1.15))};put(L.title,state.title,true);put(L.author,state.author,false)}
+const redraw=()=>{const c=document.getElementById('cv15');if(c)draw(c,CV(),400,640)};
+new MutationObserver(()=>{if(document.getElementById('cv15')&&!document.getElementById('cv15').dataset.d){document.getElementById('cv15').dataset.d=1;redraw()}}).observe(document.getElementById('app')||document.body,{childList:true,subtree:true});
+ex.cover=()=>{const c=CV(),{plat,trim,pages}=profile(),cal=PL?PRINT.cover(plat,trim,pages,PP().paper):null;
+ return`<h4>Cover designer</h4><div style="display:grid;grid-template-columns:minmax(220px,400px) 1fr;gap:14px"><canvas id="cv15" width="400" height="640" role="img" aria-label="Cover preview: ${ea(c.title)} by ${ea(c.author)}" style="max-width:100%;border:1px solid var(--line)"></canvas>
+ <div style="display:grid;gap:6px;align-content:start"><label>Title <input data-cv15="title" value="${ea(c.title)}"></label><label>Author <input data-cv15="author" value="${ea(c.author)}"></label><label>Template <select data-cv15="tpl">${TPL.map(t=>`<option ${t==c.tpl?'selected':''}>${t}</option>`).join('')}</select></label><label>Background <input type="color" data-cv15="bg" value="${ea(c.bg)}"></label>
+ <div class="row"><button data-cvb="img">Choose background image…</button><button data-cvb="noimg" ${c.img?'':'disabled'}>Remove image</button></div><p class="mut" style="font-size:12px">Fonts are system fonts. Images you add must be yours or licensed for commercial use.</p>
+ <div class="row"><button data-cvb="png">Download ebook cover (1600×2560 PNG)</button><button data-cvb="use">Use as book cover</button>${cal?'<button data-cvb="wrap">Download full-wrap cover (PNG)</button>':''}</div>
+ ${cal?`<p style="font-size:12px">Full wrap: <b>${cal.widthMm} × ${cal.heightMm} mm</b> (${cal.px(300).w} × ${cal.px(300).h} px at 300 dpi) · spine <b>${cal.spineMm} mm</b> for ${pages} pages ${cal.spineTextOk?'':'— too thin for spine text'} · bleed ${cal.bleedMm} mm. Keep a barcode-free area of about 50 × 30 mm on the back.</p>`:''}</div></div>`};
+document.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.cv15;if(!k)return;S.cover={...CV(),[k]:e.target.value};save();document.getElementById('cv15')&&(document.getElementById('cv15').dataset.d='');rr()});
+const pick=()=>new Promise(res=>{const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=()=>res(i.files[0]||null);i.click()});
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-cvb]');if(!b)return;const k=b.dataset.cvb,c=CV();
+ if(k=='img'){const f=await pick();if(!f)return;try{const r=await X.blob.put(f,{max:2400});S.cover={...c,img:r};save();rr()}catch(x){X.toast(x.message,{kind:'err'})}}
+ if(k=='noimg'){S.cover={...c,img:null};save();rr()}
+ const dlc=(cv,n)=>cv.toBlob(bl=>{const a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download=n;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)});
+ if(k=='png'){const cv=document.createElement('canvas');await draw(cv,c,1600,2560);dlc(cv,(c.title||'cover')+'.png')}
+ if(k=='use'){const cv=document.createElement('canvas');await draw(cv,c,1000,1600);(S.meta=S.meta&&typeof S.meta=='object'?S.meta:{}).cover=cv.toDataURL('image/jpeg',.85);save();X.toast('Cover set — it will be used in EPUB, DOCX and print exports',{kind:'ok'})}
+ if(k=='wrap'){const{plat,trim,pages}=profile(),cal=PRINT.cover(plat,trim,pages,PP().paper),px=cal.px(300),cv=document.createElement('canvas');cv.width=px.w;cv.height=px.h;const g=cv.getContext('2d'),mm=px.w/cal.widthMm;g.fillStyle=c.bg;g.fillRect(0,0,px.w,px.h);
+  const fc=document.createElement('canvas');await draw(fc,c,Math.round((trim[0]+cal.bleedMm)*mm),px.h);g.drawImage(fc,cal.spineX*mm+cal.spineMm*mm,0);   // front panel (with right-side bleed)
+  g.fillStyle=ink(c.bg);g.font='bold '+Math.round(px.h*0.02)+'px Georgia,serif';g.textAlign='center';if(cal.spineTextOk){g.save();g.translate((cal.spineX+cal.spineMm/2)*mm,px.h/2);g.rotate(Math.PI/2);g.fillText(c.title+(c.author?' — '+c.author:''),0,0);g.restore()}
+  g.strokeStyle='rgba(255,0,0,.6)';g.setLineDash([12,12]);g.strokeRect(cal.bleedMm*mm,cal.bleedMm*mm,px.w-2*cal.bleedMm*mm,px.h-2*cal.bleedMm*mm);dlc(cv,(c.title||'cover')+'-wrap.png');X.toast('Dashed red line = trim edge; guides can be removed before upload',{ms:6000})}});
+})();

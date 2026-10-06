@@ -1,0 +1,14 @@
+node_modules
+data
+models
+test
+.git
+.env
+*.png
+*.md
+!README.md
+Dockerfile
+docker-compose.yml
+.env.production
+deploy
+docker-compose*.yml

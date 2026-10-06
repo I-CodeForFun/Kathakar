@@ -1,0 +1,62 @@
+# docker compose up -d --build            → http://localhost:3000
+# docker compose --profile ollama up -d   → also starts a local Ollama (set OLLAMA_URL=http://ollama:11434 in .env)
+services:
+  kathakaar:
+    build:
+      context: .
+      args:
+        WITH_MODELS: "1"                          # "0" = smaller image, built-in embedder only
+        PRELOAD_MODEL: "Xenova/bge-base-en-v1.5"  # "" = download on first use
+    image: kathakaar:latest
+    container_name: kathakaar
+    init: true
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${KATHAKAAR_PORT:-3000}:3000"    # reachable from anywhere (all interfaces) — KATHAKAAR_TOKEN is REQUIRED below. Put a TLS reverse proxy in front for HTTPS.
+    environment:
+      KATHAKAAR_MULTIUSER: "${KATHAKAAR_MULTIUSER:-0}"
+      KATHAKAAR_SIGNUP: "${KATHAKAAR_SIGNUP:-1}"
+      TRUST_PROXY: "${TRUST_PROXY:-0}"
+      KATHAKAAR_KEY: "${KATHAKAAR_KEY:-}"
+      AI_CONFIG_OPEN: "1"                         # lets the AI Engine tab save settings from your browser (the container sees the host as a non-loopback address)
+      HOST: "0.0.0.0"                             # listen on all interfaces inside the container
+      KATHAKAAR_TOKEN: "${KATHAKAAR_TOKEN:-}"   # single-user shared token (leave empty when using KATHAKAAR_MULTIUSER=1)
+      OLLAMA_URL: "${OLLAMA_URL:-http://host.docker.internal:11434}"   # Ollama running on the host (or http://ollama:11434 for the bundled one)
+      # AI_EMBED_PROVIDER: local
+      # AI_EMBED_MODEL: Xenova/bge-base-en-v1.5
+      # AI_JUDGE_PROVIDER: ollama
+      # AI_JUDGE_MODEL: qwen2.5:7b
+      # OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      # ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"       # reach Ollama on the host from Linux too
+    volumes:
+      - kathakaar-data:/app/data                  # stories, backups, AI settings (API keys!) — back this up, keep it private
+      - kathakaar-models:/app/models              # downloaded embedding models
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+
+  ollama:
+    profiles: ["ollama"]
+    image: ollama/ollama:latest
+    container_name: kathakaar-ollama
+    restart: unless-stopped
+    volumes:
+      - ollama:/root/.ollama
+    # NVIDIA GPU (needs the NVIDIA Container Toolkit): uncomment
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+volumes:
+  kathakaar-data:
+  kathakaar-models:
+  ollama:
