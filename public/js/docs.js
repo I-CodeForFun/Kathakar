@@ -174,6 +174,12 @@ sec('faq','Reference','FAQ — quick answers','',
 <dt>Does my text go to an AI?</dt><dd>Not unless you enable a remote verifier or API engine, and then only flagged passages.</dd>
 <dt>Is there an undo for deleting a story?</dt><dd>No. Export first.</dd></dl>`);
 
+/* ---------- tab -> docs section map (checked by test/guards.js: every tab must be documented) ---------- */
+const COVER={},D=(section,tab)=>{COVER[tab]=section};window.DOCTAB=COVER;
+D('start','docs');D('data','ai');D('data','data');D('views','life');D('views','cork');D('views','cal');
+D('write','book');D('craft','craft');D('craft','packs');D('people','arcs');
+D('world','places');D('world','props');D('world','board');D('world','wmap');D('world','wiki');D('rules','worlds');
+
 /* ---------- page ---------- */
 const plain=h=>h.replace(/<[^>]+>/g,' ').replace(/&amp;/g,'&').toLowerCase();
 const match=s=>!Q||plain(s.title+' '+s.lead+' '+s.html).includes(Q);
