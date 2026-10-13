@@ -1,6 +1,10 @@
-# Kathakaar (कथाकार)
+# Kathakaar (कथाकार) – Free Open-Source Story Writing Software
 
-*Kathakaar* means "storyteller". It is a **story planner and writing studio** for novelists and screenwriters: plan events on timelines, track characters, places, props and relationships, write the manuscript inside the plan, export to DOCX/EPUB/PDF/Fountain/FDX — and let the app warn you when the story contradicts its own rules.
+**Kathakaar** is free, open-source **story writing software** for novelists, authors and screenwriters. Plan your plot on timelines, track characters, places, props and relationships, write your novel or screenplay inside the plan, and export to DOCX, EPUB, PDF, Fountain and FDX. It also warns you when your story contradicts its own rules. A privacy-friendly, offline-first **Scrivener alternative** and **novel writing app** that runs in your browser.
+
+*Kathakaar* means "storyteller" in Hindi/Sanskrit.
+
+**Keywords:** story writing software · novel writing software · screenwriting app · story planner · plot outliner · worldbuilding tool · Scrivener alternative · manuscript editor
 
 It is **local-first** (works offline, saves in your browser), with an optional Node.js server for sync, **multi-user accounts**, sharing, and semantic consistency checks. No framework, no build step, no runtime dependencies.
 

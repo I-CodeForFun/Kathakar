@@ -1,7 +1,7 @@
 {
  "name": "kathakaar",
  "version": "1.0.0",
- "description": "Kathakaar \u2013 story planner with worlds, rules and local semantic consistency checks",
+ "description": "Kathakaar – free open-source story writing software: novel & screenplay planner with worldbuilding, timelines and consistency checks",
  "main": "server/index.js",
  "engines": {
   "node": ">=18"
@@ -17,5 +17,21 @@
  "license": "MIT",
  "devDependencies": {
   "axe-core": "^4.13.0"
- }
+ },
+ "keywords": [
+  "story-writing",
+  "writing-software",
+  "novel-writing",
+  "creative-writing",
+  "storytelling",
+  "screenwriting",
+  "writing-tool",
+  "story-planner",
+  "worldbuilding",
+  "scrivener-alternative",
+  "epub",
+  "fountain",
+  "offline-first",
+  "local-first"
+ ]
 }
